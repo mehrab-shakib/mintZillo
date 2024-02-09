@@ -16,12 +16,12 @@ contract Escrow {
         _;
     }
     modifier onlyBuyer(uint _nftID) {
-        require (msg.sender == buyer[_nftID], 'Only buyer can call');
-        _; 
+        require(msg.sender == buyer[_nftID], "Only buyer can call");
+        _;
     }
 
-    modifier onlyInspector (){
-        require (msg.sender == inspector, 'You are not Inspector'); 
+    modifier onlyInspector() {
+        require(msg.sender == inspector, "You are not Inspector");
         _;
     }
 
@@ -29,8 +29,8 @@ contract Escrow {
     mapping(uint => uint) public purchasePrice;
     mapping(uint => uint) public escrowAmount;
     mapping(uint => address) public buyer;
-    mapping (uint => bool) public inspectionPassed;
-    mapping (uint => mapping (address => bool)) public saleApproval ;
+    mapping(uint => bool) public inspectionPassed;
+    mapping(uint => mapping(address => bool)) public saleApproval;
 
     constructor(
         address _nftAddress,
@@ -58,36 +58,50 @@ contract Escrow {
         buyer[_nftID] = _buyer;
     }
 
-    // for inspection 
+    // for inspection
 
     function inspectionStatus(uint _nftID, bool _passed) public onlyInspector {
-        inspectionPassed[_nftID] = _passed; 
+        inspectionPassed[_nftID] = _passed;
     }
-    
-    // function for approval 
+
+    // function for approval
     function approveSale(uint _nftID) public {
-        saleApproval[_nftID][msg.sender] = true; 
+        saleApproval[_nftID][msg.sender] = true;
     }
 
-    // function for Earnest Deposite 
+    // function for Earnest Deposite
     function depositEarnest(uint _nftID) public payable onlyBuyer(_nftID) {
-        require (msg.value >= escrowAmount[_nftID]); 
+        require(msg.value >= escrowAmount[_nftID]);
     }
 
-     receive() external payable {}
-   
-    
-    function getBalance() public view returns (uint){
-        return address(this).balance; 
-    }
-
-// deal will be finalized by the seller 
+    // deal will be finalized by the seller
     function finalizeDeal(uint _nftID) public {
-        require (inspectionPassed[_nftID]); 
-        require (saleApproval[_nftID] [buyer[_nftID]]); 
-        require (saleApproval[_nftID][seller]); 
-        require (saleApproval[_nftID][lender]); 
-        require ( address(this).balance >= purchasePrice[_nftID]); 
+        require(inspectionPassed[_nftID]);
+        require(saleApproval[_nftID][buyer[_nftID]]);
+        require(saleApproval[_nftID][seller]);
+        require(saleApproval[_nftID][lender]);
+        require(address(this).balance >= purchasePrice[_nftID]);
+        isListed[_nftID] = false;
+        (bool success, ) = payable(seller).call{value: address(this).balance}(
+            ""
+        );
+        require(success);
+        IERC721(nftAddress).transferFrom(address(this), buyer[_nftID], _nftID);
+    }
 
+    // Cancel Sale (handle earnest deposit)
+    // -> if inspection status is not approved, then refund, otherwise send to seller
+    function cancelSale(uint256 _nftID) public {
+        if (inspectionPassed[_nftID] == false) {
+            payable(buyer[_nftID]).transfer(address(this).balance);
+        } else {
+            payable(seller).transfer(address(this).balance);
+        }
+    }
+
+    receive() external payable {}
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
     }
 }

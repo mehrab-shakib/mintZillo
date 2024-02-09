@@ -165,6 +165,30 @@ describe("Escrow", () => {
       await transaction.wait();
     });
 
-    it("Deal Done", async () => {});
+    it("Update balance", async () => {
+      expect(await escrow.getBalance()).to.equal(0);
+    });
+    it("Update Owner", async () => {
+      expect(await re.ownerOf(1)).to.equal(buyer.address);
+    });
+  });
+
+  describe("Cancel Deal", () => {
+    it("if inspector ", async () => {
+      transaction = await escrow.connect(inspector).inspectionStatus(1, true);
+      await transaction.wait();
+
+      transaction = await escrow.connect(seller).cancelSale(1);
+      await transaction.wait();
+      expect(await escrow.getBalance()).to.equal(0);
+    });
+    it("if not inspector ", async () => {
+      transaction = await escrow.connect(inspector).inspectionStatus(1, true);
+      await transaction.wait();
+
+      transaction = await escrow.connect(buyer).cancelSale(1);
+      await transaction.wait();
+      expect(await escrow.getBalance()).to.equal(0);
+    });
   });
 });
