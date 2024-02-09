@@ -74,10 +74,20 @@ contract Escrow {
         require (msg.value >= escrowAmount[_nftID]); 
     }
 
-     //function receiver() external payable {};
+     receive() external payable {}
    
     
     function getBalance() public view returns (uint){
         return address(this).balance; 
+    }
+
+// deal will be finalized by the seller 
+    function finalizeDeal(uint _nftID) public {
+        require (inspectionPassed[_nftID]); 
+        require (saleApproval[_nftID] [buyer[_nftID]]); 
+        require (saleApproval[_nftID][seller]); 
+        require (saleApproval[_nftID][lender]); 
+        require ( address(this).balance >= purchasePrice[_nftID]); 
+
     }
 }
