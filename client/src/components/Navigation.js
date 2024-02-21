@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import logo from "../assets/logo2.svg";
+import logo from "../assets/logo6.svg";
 const Navigation = ({ account, setAccount }) => {
     const connectWalletHandler = async () => {
         const accounts = await window.ethereum.request({
