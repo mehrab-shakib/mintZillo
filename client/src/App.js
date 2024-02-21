@@ -33,23 +33,21 @@ function App() {
 
     const totalSupply = await  re.totalSupply();
     console.log(totalSupply.toString());
-    // let homes =[]; 
+    const homes =[]; 
 
-    // for (var i=1; i<=totalSupply; i++){
-    //   const uri = await re.tokenURI(i); 
-    //   const response = await fetch(uri); 
-    //   const metadata = await response.json(); 
-    //   homes.push(metadata); 
-    // }
+    for (var i=1; i<=totalSupply; i++){
+      const uri = await re.tokenURI(i); 
+      const response = await fetch(uri); 
+      const metadata = await response.json(); 
+      homes.push(metadata); 
+    }
    
-    // setHomes(homes); 
-    // console.log(homes); 
+    setHomes(homes); 
+    console.log(homes); 
     
 
-    // const escrow= new ethers.Contract(config[network.chainId].escrow.address, Escrow.abi, provider);
-   
-
-    // setEscrow(escrow); 
+    const escrow= new ethers.Contract(config[network.chainId].escrow.address, Escrow.abi, provider);
+    setEscrow(escrow); 
     // console.log(escrow)
 
 
