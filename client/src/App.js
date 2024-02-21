@@ -6,20 +6,22 @@ import RealEstate from "./contract_abi/RealEstate.json";
 import Escrow from "./contract_abi/Escrow.json";
 
 // importing components
-import "./components/Navigation";
-import "./components/Home";
-import "./components/Search";
+import Navigation from "./components/Navigation";
+import Search from "./components/Search"
+import Home from  "./components/Home";
 
 // importing config
 import config from "./config.json";
-import Navigation from "./components/Navigation";
-import Search from "./components/Search"
+
 
 function App() {
   const [account, setAccount] = useState(null);
   const [provider, setProvider]= useState(null); 
   const [escrow, setEscrow]= useState(null); 
   const [homes, setHomes]= useState([]);
+  const [home, setHome] = useState({})
+  const [toggle, setToggle] = useState(false);
+
 
   //connecting Metamask;
   const loadChaindata = async () => {
@@ -62,28 +64,33 @@ function App() {
     loadChaindata();
   }, []);
 
+  const togglePop = (home) => {
+    setHome(home)
+    toggle ? setToggle(false) : setToggle(true);
+  }
+
   return (
     <div>
       <Navigation account={account} setAccount={setAccount}/>
       <Search />
       <div className="cards__section">
-        <h2>Homes For you.</h2>
+        <h3>Homes For You.</h3>
         <hr/> 
         <div className="cards">
           {
             homes.map((home, index)=>(
-              <div className="card" key={index}>
+              <div className="card" key={index}onClick={()=>togglePop(home)}>
             <div className="card__image">
-              <img src="" alt="Home" />
+              <img src={home.image} alt="Home" />
             </div>
             <div className="card__info">
-              <h4>1 ETH</h4>
+              <h4>{home.attributes[0].value} ETH</h4>
               <p>
-                <strong>1 </strong>bds | 
-                <strong> 2 </strong>ba | 
-                <strong> 3 </strong>sqft | 
+                <strong>{home.attributes[2].value}</strong> beds | 
+                <strong>{home.attributes[3].value}</strong> baths | 
+                <strong>{home.attributes[4].value}</strong> sqft | 
               </p>
-              <p>Zindabazar, Sylhet </p>
+              <p>{home.address}</p>
             </div>
           </div>
             ))}
@@ -91,12 +98,15 @@ function App() {
 
         </div>
       </div>
+
+      {toggle && (
+        <Home />
+      )}
+
     </div>
   );
 }
 
 export default App;
 
-// before going to deploy 3:33:47
-
-// main timestamp 3:39:27
+// timestamp 3:45:5 sec
