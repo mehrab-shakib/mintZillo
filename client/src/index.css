@@ -295,7 +295,7 @@ header {
 .home__owned {
   margin: 20px 5px;
 
-  background-color: var(--clr-blue);
+  background-color: var(--clr--main);
   color: var(--clr-white);
 
   border: none;
@@ -315,7 +315,7 @@ header {
 }
 
 .home__buy:hover {
-  background-color: var(--clr-blue-2);
+  background-color: var(--clr--main-2);
 }
 
 .home__contact {
@@ -323,14 +323,14 @@ header {
   height: 50px;
 
   background-color: transparent;
-  color: var(--clr-blue);
+  color: var(--clr--main);
 
-  border: 1px solid var(--clr-blue);
+  border: 1px solid var(--clr--main)
 }
 
 .home__contact:hover {
   background-color: #f7f7f7;
-  color: var(--clr-blue-2);
+  color: var(--clr--main-2); 
 }
 
 .home__owned {
