@@ -100,7 +100,7 @@ function App() {
       </div>
 
       {toggle && (
-        <Home home={home} provider={provider} escrow={escrow} togglePop={togglePop} />
+        <Home home={home} provider={provider} account={account} escrow={escrow} togglePop={togglePop} />
       )}
 
     </div>
