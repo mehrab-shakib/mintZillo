@@ -52,6 +52,7 @@ const Home = ({ home, provider,account,  escrow, togglePop }) => {
 
         const owner = await escrow.buyer(home.id)
         setOwner(owner)
+        
     }
 
     const buyHandler = async () => {
